@@ -64,6 +64,27 @@ public class UserDAO {
         return result;
     }
 
+    public void updatePoint(String username, int point) {
+        point = point + 5;
+        String sql = "UPDATE user SET point = ? where username= ?";
+        try {
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, point);
+            pstmt.setString(2, username);
+
+            int result = pstmt.executeUpdate();
+
+            if (result > 0) {
+                System.out.println("Point 업데이트 성공");
+            } else {
+                System.out.println("Point 업데이트 실패");
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     // signup username 중복 확인
     // 중복 없을 시 false 반환
     // 중복 존재 시 true 반환

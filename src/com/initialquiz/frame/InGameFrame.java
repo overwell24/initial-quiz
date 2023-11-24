@@ -1,26 +1,31 @@
 package com.initialquiz.frame;
 
+import com.initialquiz.controller.UserPointController;
 import com.initialquiz.dto.QuizDTO;
 import com.initialquiz.dto.UserDTO;
-import java.awt.Insets;
+import com.initialquiz.service.UserService;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 
 public class InGameFrame extends javax.swing.JFrame {
 
     UserDTO user;
     List<QuizDTO> quizList;
+    int quizCnt;
 
     public InGameFrame() {
         initComponents();
         messageBoard.setBorder(BorderFactory.createEmptyBorder());
-
+        jScrollPane1.setBorder(null);
     }
 
     // 생성자 의존성 주입
     public InGameFrame(UserDTO user, List<QuizDTO> quizList) throws SQLException {
         initComponents();
+        // messageBoard 테두리 없애기
         messageBoard.setBorder(BorderFactory.createEmptyBorder());
         jScrollPane1.setBorder(null);
 
@@ -30,14 +35,8 @@ public class InGameFrame extends javax.swing.JFrame {
         // user, quizList 초기화
         this.user = user;
         this.quizList = quizList;
-
-        // 포인트 초기화
-        userPointLabel.setText(String.valueOf(user.getPoint()));
-        System.out.println(String.valueOf(user.getPoint()));
-        // 초성 초기화 
-        initialWordLabel.setText(quizList.get(0).getInitialWord());
-        // 설명 초기화 
-        explanationLabel.setText(quizList.get(0).getExplanation());
+        // 게임 초기 설정
+        initGame();
     }
 
     @SuppressWarnings("unchecked")
@@ -109,9 +108,9 @@ public class InGameFrame extends javax.swing.JFrame {
                 .addGroup(inGameBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(userPointLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(initialWordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47)
+                .addGap(40, 40, 40)
                 .addComponent(quizCntLabel)
                 .addGap(38, 38, 38))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inGameBackgroundLayout.createSequentialGroup()
@@ -119,31 +118,28 @@ public class InGameFrame extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(submitBtn))
             .addGroup(inGameBackgroundLayout.createSequentialGroup()
-                .addGap(83, 83, 83)
-                .addComponent(explanationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(inGameBackgroundLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
+            .addGroup(inGameBackgroundLayout.createSequentialGroup()
+                .addGap(82, 82, 82)
+                .addComponent(explanationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         inGameBackgroundLayout.setVerticalGroup(
             inGameBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inGameBackgroundLayout.createSequentialGroup()
-                .addGroup(inGameBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(35, 35, 35)
+                .addGroup(inGameBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(inGameBackgroundLayout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addGroup(inGameBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(quizCntLabel)
-                            .addComponent(initialWordLabel)))
-                    .addGroup(inGameBackgroundLayout.createSequentialGroup()
-                        .addGap(45, 45, 45)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(userPointLabel)))
+                        .addComponent(userPointLabel))
+                    .addComponent(quizCntLabel)
+                    .addComponent(initialWordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(explanationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(explanationLabel)
+                .addGap(40, 40, 40)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inGameBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -175,8 +171,65 @@ public class InGameFrame extends javax.swing.JFrame {
         String msgList = messageBoard.getText();
         messageBoard.setText(msgList + "\n" + user.getUsername() + ": " + msg);
 
+        // 정답 체크
+        if (answerMatching(msg)) {
+            try {
+                // point 올리기
+                updatePoint();
+            } catch (SQLException ex) {
+                Logger.getLogger(InGameFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(InGameFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
+            // 다음 퀴즈로 넘어가기
+            updateQuiz();
+            System.out.println("정답입니다!");
+
+        } else {
+
+        }
     }//GEN-LAST:event_submitBtnActionPerformed
+
+    private void updatePoint() throws SQLException, ClassNotFoundException {
+        // point 업데이트
+        UserPointController userPointController = new UserPointController(new UserService());
+        userPointController.handleIncreasePoint(user.getUsername(), user.getPoint());
+        // userPointLabel 업데이트
+        userPointLabel.setText(String.valueOf(user.getPoint()+5));
+    }
+
+    private void updateQuiz() {
+        // quizCnt 업데이트
+        quizCnt++;
+        // 초성 업데이트
+        initialWordLabel.setText(quizList.get(quizCnt).getInitialWord());
+        // 설명 업데이트
+        explanationLabel.setText(quizList.get(quizCnt).getExplanation());
+        // quizCntLabel 업데이트
+        quizCntLabel.setText((quizCnt + 1) + "/10");
+    }
+
+    private void initGame() {
+        // quizCnt 초기화
+        quizCnt = 0;
+        // 포인트 초기화
+        userPointLabel.setText(String.valueOf(user.getPoint()));
+        // 초성 초기화 
+        initialWordLabel.setText(quizList.get(quizCnt).getInitialWord());
+        // 설명 초기화 
+        explanationLabel.setText(quizList.get(quizCnt).getExplanation());
+        // quizCntLabel 초기화
+        quizCntLabel.setText((quizCnt + 1) + "/10");
+    }
+
+    private boolean answerMatching(String userAnswer) {
+        if (userAnswer.equals(quizList.get(quizCnt).getAnswer())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public static void main(String args[]) {
 

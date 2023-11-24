@@ -12,4 +12,5 @@ public class QuizService {
         List<QuizDTO> quizList = quizDAO.getQuizList();
         return quizList;
     }
+    
 }

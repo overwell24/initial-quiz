@@ -5,9 +5,11 @@ import com.initialquiz.dto.UserDTO;
 import java.sql.SQLException;
 
 public class UserService {
-
+    
+    UserDAO userDAO;
+    
     public UserDTO login(UserDTO loginUser) throws SQLException, ClassNotFoundException {
-        UserDAO userDAO = new UserDAO();
+        userDAO = new UserDAO();
         UserDTO dbUser = userDAO.getDBUser(loginUser.getUsername());
 
         // dbuser null 검증 
@@ -32,7 +34,7 @@ public class UserService {
     }
 
     public boolean signup(UserDTO user) throws SQLException, ClassNotFoundException {
-        UserDAO userDAO = new UserDAO();
+        userDAO = new UserDAO();
 
         // User 정보 유효성 검사
         if (isUsereValid(user)) {
@@ -55,6 +57,11 @@ public class UserService {
         }
 
         return false;
+    }
+    
+    public void increasePoint(String username, int point) throws SQLException, ClassNotFoundException{
+        userDAO = new UserDAO();
+        userDAO.updatePoint(username, point);
     }
 
     // User 정보 유효성 검사 함수
