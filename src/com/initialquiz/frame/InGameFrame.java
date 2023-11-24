@@ -14,16 +14,15 @@ public class InGameFrame extends javax.swing.JFrame {
 
     public InGameFrame() {
         initComponents();
-        jTextArea1.setBorder(BorderFactory.createEmptyBorder());
+        messageBoard.setBorder(BorderFactory.createEmptyBorder());
 
     }
 
     // 생성자 의존성 주입
     public InGameFrame(UserDTO user, List<QuizDTO> quizList) throws SQLException {
         initComponents();
-        jTextArea1.setBorder(BorderFactory.createEmptyBorder());
+        messageBoard.setBorder(BorderFactory.createEmptyBorder());
         jScrollPane1.setBorder(null);
-
 
         // InGameFrame 접속 메세지 
         System.out.println("=======InGameFrame=======");
@@ -54,7 +53,7 @@ public class InGameFrame extends javax.swing.JFrame {
         userPointLabel = new javax.swing.JLabel();
         quizCntLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        messageBoard = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -92,15 +91,14 @@ public class InGameFrame extends javax.swing.JFrame {
         quizCntLabel.setForeground(new java.awt.Color(255, 255, 255));
         quizCntLabel.setText("1/10");
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setBackground(new java.awt.Color(74, 100, 90));
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("BM Hanna Pro", 0, 13)); // NOI18N
-        jTextArea1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextArea1.setRows(5);
-        jTextArea1.setText("asdsadsadsa\ndsadsadsadsad\nsadsadsadsadsad\nasdsadsadsadsads\ndasdsadsd\nasddsad");
-        jTextArea1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        jScrollPane1.setViewportView(jTextArea1);
+        messageBoard.setEditable(false);
+        messageBoard.setBackground(new java.awt.Color(74, 100, 90));
+        messageBoard.setColumns(20);
+        messageBoard.setFont(new java.awt.Font("BM Hanna Pro", 0, 13)); // NOI18N
+        messageBoard.setForeground(new java.awt.Color(255, 255, 255));
+        messageBoard.setRows(5);
+        messageBoard.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jScrollPane1.setViewportView(messageBoard);
 
         javax.swing.GroupLayout inGameBackgroundLayout = new javax.swing.GroupLayout(inGameBackground);
         inGameBackground.setLayout(inGameBackgroundLayout);
@@ -124,7 +122,10 @@ public class InGameFrame extends javax.swing.JFrame {
                 .addGap(83, 83, 83)
                 .addComponent(explanationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane1)
+            .addGroup(inGameBackgroundLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         inGameBackgroundLayout.setVerticalGroup(
             inGameBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,10 +167,14 @@ public class InGameFrame extends javax.swing.JFrame {
 
     private void submitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBtnActionPerformed
         // inputField text 가져오기
-        String input = messageField.getText();
-        System.out.println(user.getUsername() + " message: " + input);
+        String msg = messageField.getText();
+        System.out.println(user.getUsername() + " message: " + msg);
         // inputField 초기화
         messageField.setText("");
+        // messageBoard에 message 추가
+        String msgList = messageBoard.getText();
+        messageBoard.setText(msgList + "\n" + user.getUsername() + ": " + msg);
+
 
     }//GEN-LAST:event_submitBtnActionPerformed
 
@@ -190,7 +195,7 @@ public class InGameFrame extends javax.swing.JFrame {
     private javax.swing.JLabel initialWordLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea messageBoard;
     private javax.swing.JTextField messageField;
     private javax.swing.JLabel quizCntLabel;
     private javax.swing.JButton submitBtn;
