@@ -1,8 +1,11 @@
 package com.initialquiz.frame;
 
+import com.initialquiz.controller.InitGameController;
 import com.initialquiz.controller.UserPointController;
+import com.initialquiz.dao.UserDAO;
 import com.initialquiz.dto.QuizDTO;
 import com.initialquiz.dto.UserDTO;
+import com.initialquiz.service.QuizService;
 import com.initialquiz.service.UserService;
 import java.sql.SQLException;
 import java.util.List;
@@ -176,15 +179,13 @@ public class InGameFrame extends javax.swing.JFrame {
             try {
                 // point 올리기
                 updatePoint();
+                // 다음 퀴즈로 넘어가기
+                updateQuiz();
             } catch (SQLException ex) {
                 Logger.getLogger(InGameFrame.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(InGameFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            // 다음 퀴즈로 넘어가기
-            updateQuiz();
-            System.out.println("정답입니다!");
 
         } else {
 
@@ -195,19 +196,34 @@ public class InGameFrame extends javax.swing.JFrame {
         // point 업데이트
         UserPointController userPointController = new UserPointController(new UserService());
         userPointController.handleIncreasePoint(user.getUsername(), user.getPoint());
+        // user 업데이트
+        UserDAO userDAO = new UserDAO();
+        user = userDAO.getDBUser(user.getUsername());
         // userPointLabel 업데이트
-        userPointLabel.setText(String.valueOf(user.getPoint()+5));
+        userPointLabel.setText(String.valueOf(user.getPoint()));
     }
 
-    private void updateQuiz() {
+    private void updateQuiz() throws SQLException, ClassNotFoundException {
+
         // quizCnt 업데이트
         quizCnt++;
-        // 초성 업데이트
-        initialWordLabel.setText(quizList.get(quizCnt).getInitialWord());
-        // 설명 업데이트
-        explanationLabel.setText(quizList.get(quizCnt).getExplanation());
-        // quizCntLabel 업데이트
-        quizCntLabel.setText((quizCnt + 1) + "/10");
+        
+        // 10개 quiz 끝나면 새로운 InGameFrame 생성
+        if (quizCnt > 9) {
+            // 현재 InGameFrame 종료
+            this.dispose();
+            // 새로운 InGameFrame 생성
+            InitGameController initGameController = new InitGameController(user, new QuizService());
+            initGameController.initializeGame();
+        } else {
+            // 초성 업데이트
+            initialWordLabel.setText(quizList.get(quizCnt).getInitialWord());
+            // 설명 업데이트
+            explanationLabel.setText(quizList.get(quizCnt).getExplanation());
+            // quizCntLabel 업데이트
+            quizCntLabel.setText((quizCnt + 1) + "/10");
+        }
+
     }
 
     private void initGame() {
