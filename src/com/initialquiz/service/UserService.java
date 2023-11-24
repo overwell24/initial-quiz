@@ -6,29 +6,29 @@ import java.sql.SQLException;
 
 public class UserService {
 
-    public boolean login(UserDTO loginUser) throws SQLException, ClassNotFoundException {
+    public UserDTO login(UserDTO loginUser) throws SQLException, ClassNotFoundException {
         UserDAO userDAO = new UserDAO();
         UserDTO dbUser = userDAO.getDBUser(loginUser.getUsername());
 
         // dbuser null 검증 
         if (dbUser == null) {
             System.out.println("Login Failed ...");
-            return false;
+            return null;
         }
         // username 일치 비교
         if (dbUser.getUsername().equals(loginUser.getUsername())) {
             // passwd 일치 비교
             if (dbUser.getPasswd().equals(loginUser.getPasswd())) {
                 System.out.println("Login Sucess!");
-                return true;
+                return dbUser;
             } else {
                 System.out.println("Incorrect Password");
             }
         } else {
-            return false;
+            return null;
         }
 
-        return false;
+        return null;
     }
 
     public boolean signup(UserDTO user) throws SQLException, ClassNotFoundException {

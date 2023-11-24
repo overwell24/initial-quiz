@@ -12,7 +12,9 @@ import java.util.logging.Logger;
  * @author bsangcheon
  */
 public class LoginFrame extends javax.swing.JFrame {
+
     public LoginFrame() {
+        System.out.println("=======LoginFrame=======");
         initComponents();
     }
 
@@ -110,9 +112,9 @@ public class LoginFrame extends javax.swing.JFrame {
             UserDTO loginUser = new UserDTO();
             loginUser.setUsername(usernameField.getText());
             loginUser.setPasswd(String.valueOf(passwordField.getPassword()));
-            
-            LoginController loginController = new LoginController(this);
-            
+
+            LoginController loginController = new LoginController(this, new UserService());
+
             loginController.handleLogin(loginUser);
         } catch (SQLException ex) {
             Logger.getLogger(LoginFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -127,12 +129,13 @@ public class LoginFrame extends javax.swing.JFrame {
         this.setVisible(false);
         signupFrame.setVisible(true);
     }//GEN-LAST:event_signupLabelMouseClicked
-    
-    public void resetLogin(){
+
+    public void resetLogin() {
         usernameField.setText("");
         passwordField.setText("");
         loginFailedMessage.setText("로그인 실패!");
     }
+
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

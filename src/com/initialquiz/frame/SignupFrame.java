@@ -15,6 +15,7 @@ public class SignupFrame extends javax.swing.JFrame {
     }
 
     public SignupFrame(LoginFrame loginFrame) {
+        System.out.println("=======SignupFrame=======");
         this.loginFrame = loginFrame;
         initComponents();
     }
@@ -151,7 +152,6 @@ public class SignupFrame extends javax.swing.JFrame {
     }
 
     public static void main(String args[]) {
-
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

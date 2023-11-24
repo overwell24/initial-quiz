@@ -31,6 +31,7 @@ public class UserDAO {
                     dbUser = new UserDTO();
                     dbUser.setUsername(rs.getString("username"));
                     dbUser.setPasswd(rs.getString("passwd"));
+                    System.out.println(rs.getInt("point"));
                     dbUser.setPoint(rs.getInt("point"));
                 } else {
                     System.out.println("No results found.");
