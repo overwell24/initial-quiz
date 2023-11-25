@@ -9,3 +9,4 @@ CREATE TABLE quiz (
     answer VARCHAR(50) NOT NULL,
     explanation TEXT NOT NULL
 );
+

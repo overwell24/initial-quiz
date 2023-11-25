@@ -22,7 +22,7 @@ public class InitGameController {
     public void initializeGame() throws SQLException, ClassNotFoundException {
         // QuizList 초기화
         List<QuizDTO> quizList = quizService.initializeQuiz();
-        // InGameFrame 생성 및 퀴즈 데이터 전달
+        // InGameFrame 생성 및 퀴즈 데이터, 유저 데이터 전달
         InGameFrame inGameFrame = new InGameFrame(user, quizList);
         // InGameFrame을 화면에 표시
         inGameFrame.setVisible(true);
