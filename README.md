@@ -8,19 +8,38 @@
 GUI: `SWING` <br>
 DATABASE: `MySQL` <br>
 IDE: Apache Netbeans 14 <br>
+의존성 파일: mysql-connecto.jar
 
 ## 프로젝트 구조
+<details>
+  <summary>src/com/initialquiz</summary>
 
-mvc 패턴으로 프로젝트를 구성했다.
-
-- controller
-- service
-- dao
-- dto
 - frame
+  - LoginFrame.java
+  - SignupFrame.java
+  - InGameFrame.java
+- controller
+  - LoginController.java
+  - SignupController.java
+  - InitGameController.java
+  - UserPointController.java
+- service
+  - UserService.java
+  - QuizService.java
+- dao
+  - UserDAO.java
+  - QuizDAO.java
+- dto
+  - UserDTO
+  - QuizDTO
 - db
+  - DBConnect.java
+  - initial_quiz_schema.sql
+  - insertQuery.sql
+</details>
 
 ## 프로젝트 화면
+
 login/ signup <br>
 <img src="./screenshots/LoginFrame.png" width="40%" height="auto">
 <img src="./screenshots/SignupFrame.png" width="40%" height="auto"> <br>
