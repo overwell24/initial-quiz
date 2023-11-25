@@ -8,11 +8,11 @@
 GUI: `SWING` <br>
 DATABASE: `MySQL` <br>
 IDE: Apache Netbeans 14 <br>
-의존성 파일: mysql-connecto.jar
+의존성 파일: mysql-connector.jar
 
 ## 프로젝트 구조
 <details>
-  <summary>src/com/initialquiz</summary>
+  <summary>src/com/initialquiz/</summary>
 
 - frame
   - LoginFrame.java
