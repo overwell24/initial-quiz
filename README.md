@@ -21,5 +21,9 @@ mvc 패턴으로 프로젝트를 구성했다.
 - db
 
 ## 프로젝트 화면
-
-이미지 삽입
+login/ signup <br>
+<img src="./screenshots/LoginFrame.png" width="40%" height="auto">
+<img src="./screenshots/SignupFrame.png" width="40%" height="auto"> <br>
+ingame <br>
+<img src="./screenshots/InGameFrame.png" width="40%" height="auto">
+<img src="./screenshots/InGameFrame_play.png" width="40%" height="auto"> <br>
