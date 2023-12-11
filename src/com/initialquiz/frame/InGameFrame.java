@@ -181,6 +181,10 @@ public class InGameFrame extends javax.swing.JFrame {
                 updatePoint();
                 // 다음 퀴즈로 넘어가기
                 updateQuiz();
+                // massageBoard에 정답 메세지 추가
+                String succsessMsg = messageBoard.getText() + "\n" + "*** 정답입니다 ***";
+                messageBoard.setText(succsessMsg);
+                
             } catch (SQLException ex) {
                 Logger.getLogger(InGameFrame.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -207,7 +211,7 @@ public class InGameFrame extends javax.swing.JFrame {
 
         // quizCnt 업데이트
         quizCnt++;
-        
+
         // 10개 quiz 끝나면 새로운 InGameFrame 생성
         if (quizCnt > 9) {
             // 현재 InGameFrame 종료
